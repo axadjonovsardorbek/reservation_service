@@ -8,6 +8,9 @@ init:
 	go mod init
 	go mod tidy 
 	go mod vendor
+
+proto-gen:
+	./scripts/gen-proto.sh ${CURRENT_DIR}
 	
 migrate_up:
 	migrate -path migrations -database postgres://postgres:1111@localhost:5432/reservetion?sslmode=disable -verbose up
