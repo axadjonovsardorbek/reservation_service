@@ -20,7 +20,7 @@ func NewReservationRepo(db *sql.DB) *ReservationRepo {
 	return &ReservationRepo{db: db}
 }
 
-func (r *ReservationRepo) CreaateReservation(req *pb.ReservationReq) (*pb.Reservation, error) {
+func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error) {
 	id := uuid.New().String()
 	res := pb.Reservation{}
 
@@ -54,7 +54,7 @@ func (r *ReservationRepo) CreaateReservation(req *pb.ReservationReq) (*pb.Reserv
 	return &res, nil
 }
 
-func (r *ReservationRepo) GetById(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
+func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
 	res := pb.ReservationRes{}
 	query := `SELECT 
 					r.id, 
