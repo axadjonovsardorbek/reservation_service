@@ -32,7 +32,7 @@ const (
 type ReservationServiceClient interface {
 	Create(ctx context.Context, in *ReservationReq, opts ...grpc.CallOption) (*Reservation, error)
 	Get(ctx context.Context, in *GetByIdReq, opts ...grpc.CallOption) (*ReservationRes, error)
-	GetAll(ctx context.Context, in *GetAllReservationRes, opts ...grpc.CallOption) (*GetAllReservationRes, error)
+	GetAll(ctx context.Context, in *GetAllReservationReq, opts ...grpc.CallOption) (*GetAllReservationRes, error)
 	Update(ctx context.Context, in *ReservationUpdate, opts ...grpc.CallOption) (*Reservation, error)
 	Delete(ctx context.Context, in *GetByIdReq, opts ...grpc.CallOption) (*Void, error)
 }
@@ -63,7 +63,7 @@ func (c *reservationServiceClient) Get(ctx context.Context, in *GetByIdReq, opts
 	return out, nil
 }
 
-func (c *reservationServiceClient) GetAll(ctx context.Context, in *GetAllReservationRes, opts ...grpc.CallOption) (*GetAllReservationRes, error) {
+func (c *reservationServiceClient) GetAll(ctx context.Context, in *GetAllReservationReq, opts ...grpc.CallOption) (*GetAllReservationRes, error) {
 	out := new(GetAllReservationRes)
 	err := c.cc.Invoke(ctx, ReservationService_GetAll_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -96,7 +96,7 @@ func (c *reservationServiceClient) Delete(ctx context.Context, in *GetByIdReq, o
 type ReservationServiceServer interface {
 	Create(context.Context, *ReservationReq) (*Reservation, error)
 	Get(context.Context, *GetByIdReq) (*ReservationRes, error)
-	GetAll(context.Context, *GetAllReservationRes) (*GetAllReservationRes, error)
+	GetAll(context.Context, *GetAllReservationReq) (*GetAllReservationRes, error)
 	Update(context.Context, *ReservationUpdate) (*Reservation, error)
 	Delete(context.Context, *GetByIdReq) (*Void, error)
 	mustEmbedUnimplementedReservationServiceServer()
@@ -112,7 +112,7 @@ func (UnimplementedReservationServiceServer) Create(context.Context, *Reservatio
 func (UnimplementedReservationServiceServer) Get(context.Context, *GetByIdReq) (*ReservationRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedReservationServiceServer) GetAll(context.Context, *GetAllReservationRes) (*GetAllReservationRes, error) {
+func (UnimplementedReservationServiceServer) GetAll(context.Context, *GetAllReservationReq) (*GetAllReservationRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
 func (UnimplementedReservationServiceServer) Update(context.Context, *ReservationUpdate) (*Reservation, error) {
@@ -171,7 +171,7 @@ func _ReservationService_Get_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _ReservationService_GetAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllReservationRes)
+	in := new(GetAllReservationReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -183,7 +183,7 @@ func _ReservationService_GetAll_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: ReservationService_GetAll_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReservationServiceServer).GetAll(ctx, req.(*GetAllReservationRes))
+		return srv.(ReservationServiceServer).GetAll(ctx, req.(*GetAllReservationReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
