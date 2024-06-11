@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS restaurants (
     deleted_at BIGINT DEFAULT 0    
 );
 
-CREATE TYPE status AS ENUM('foydalanilmoqda', "bo'sh", 'bron qilingan');
+CREATE TYPE status AS ENUM('foydalanilmoqda', 'bo''sh', 'bron qilingan');
 
 CREATE TABLE IF NOT EXISTS reservations (
     id UUID PRIMARY KEY,

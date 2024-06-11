@@ -9,7 +9,8 @@ import (
 )
 
 type Config struct {
-	AUTH_PORT string
+	AUTH_PORT        string
+	RESERVATION_PORT string
 
 	DB_HOST     string
 	DB_PORT     int
@@ -28,6 +29,7 @@ func Load() Config {
 	config := Config{}
 
 	config.AUTH_PORT = cast.ToString(coalesce("AUTH_PORT", ":8088"))
+	config.RESERVATION_PORT = cast.ToString(coalesce("RESERVATION_PORT", ":50051"))
 
 	config.DB_HOST = cast.ToString(coalesce("DB_HOST", "localhost"))
 	config.DB_PORT = cast.ToInt(coalesce("DB_PORT", 5432))

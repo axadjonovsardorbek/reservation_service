@@ -16,11 +16,13 @@ type ReservationRepo struct {
 	Logger *logger.Logger
 }
 
-func NewReservationRepo(db *sql.DB) *ReservationRepo {
-	return &ReservationRepo{db: db}
+func NewReservationRepo(db *sql.DB, logger *logger.Logger) *ReservationRepo {
+	return &ReservationRepo{db: db, Logger: logger}
 }
 
 func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error) {
+	fmt.Println(1, r)
+	fmt.Println(2, req)
 	id := uuid.New().String()
 	res := pb.Reservation{}
 
@@ -31,11 +33,17 @@ func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error
 		reservation_time, 
 		status
 	) VALUES ($1, $2, $3, $4, $5) 
-	 	RETURNING *`
+	 	RETURNING 
+		id,
+		user_id,
+		restaurant_id,
+		reservation_time,
+		status`
 
 	var reservationTime time.Time
 
 	row := r.db.QueryRow(query, id, req.UserId, req.RestaurantId, req.ReservationTime, req.Status)
+	fmt.Println(3, row)
 	err := row.Scan(
 		&res.Id,
 		&res.UserId,
@@ -50,7 +58,8 @@ func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error
 
 	req.ReservationTime = reservationTime.Format("2006-01-02")
 
-	r.Logger.INFO.Panicln("Successfully created reservation")
+	r.Logger.INFO.Println("Successfully created reservation")
+	fmt.Println(4, res)
 	return &res, nil
 }
 
@@ -106,7 +115,7 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 		Reservation: []*pb.ReservationRes{},
 	}
 
-    query := `SELECT 
+	query := `SELECT 
                     r.id, 
                     u.id, 
                     u.username, 
@@ -162,7 +171,7 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 		var reservationTime time.Time
 
 		err := rows.Scan(
-            &rs.Id,
+			&rs.Id,
 			&rs.User.Id,
 			&rs.User.Username,
 			&rs.User.Email,
@@ -173,7 +182,7 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 			&rs.Restaurant.Description,
 			&reservationTime,
 			&rs.Status,
-		)		
+		)
 		if err != nil {
 			r.Logger.ERROR.Println("Error while scan all reservations")
 			return nil, err
@@ -187,25 +196,25 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 	return &res, nil
 }
 
-func (r *ReservationRepo) Update (req *pb.ReservationUpdate) (*pb.Reservation, error) {
+func (r *ReservationRepo) Update(req *pb.ReservationUpdate) (*pb.Reservation, error) {
 	res := pb.Reservation{}
 
-	query := `UPDATE reservation SET user_id=$1, restaurant_id=$2, reservation_time=$3, status=$4 WHERE id=$5 RETURNING *`
+	query := `UPDATE reservations SET user_id=$1, restaurant_id=$2, reservation_time=$3, status=$4 WHERE id=$5 RETURNING id, user_id, restaurant_id, reservation_time`
 
-	row := r.db.QueryRow(query, req.UpdateReservation.UserId, req.UpdateReservation.RestaurantId, req.UpdateReservation.ReservationTime, req.UpdateReservation.Status, req.Id)
-	
+	row := r.db.QueryRow(query, req.UpdateReservation.UserId, req.UpdateReservation.RestaurantId, req.UpdateReservation.ReservationTime, req.UpdateReservation.Status, req.Id.Id)
+
 	var reservationTime time.Time
 
 	err := row.Scan(
-        &res.Id,
-        &res.UserId,
-        &res.RestaurantId,
-        &reservationTime,
+		&res.Id,
+		&res.UserId,
+		&res.RestaurantId,
+		&reservationTime,
 	)
-	if err!= nil {
-        r.Logger.ERROR.Println("Error while updating reservation")
-        return nil, err
-    }
+	if err != nil {
+		r.Logger.ERROR.Println("Error while updating reservation")
+		return nil, err
+	}
 	res.ReservationTime = reservationTime.Format("2006-01-02")
 
 	return &res, nil
@@ -214,12 +223,12 @@ func (r *ReservationRepo) Update (req *pb.ReservationUpdate) (*pb.Reservation, e
 func (r *ReservationRepo) Delete(req *pb.GetByIdReq) (*pb.Void, error) {
 	res := pb.Void{}
 
-	query := `UPDATE reservation SET deleted_at=$1 WHERE id=$2`
-	_, err := r.db.Exec(query, time.Now().Unix(), req.Id)
-	if err!= nil {
-        r.Logger.ERROR.Println("Error while deleting reservation")
-        return nil, err
-    }
+	query := `UPDATE reservations SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1`
+	_, err := r.db.Exec(query, req.Id)
+	if err != nil {
+		r.Logger.ERROR.Println("Error while deleting reservation")
+		return nil, err
+	}
 
 	return &res, nil
 }

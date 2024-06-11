@@ -37,7 +37,7 @@ func (s *ReservationService) Get(ctx context.Context, idReq *r.GetByIdReq) (*r.R
 	return resp, nil
 }
 
-func (s *ReservationService) GetAll(ctx *context.Context, allReservations *r.GetAllReservationReq)(*r.GetAllReservationRes, error){
+func (s *ReservationService) GetAll(ctx context.Context, allReservations *r.GetAllReservationReq) (*r.GetAllReservationRes, error) {
 	reservations, err := s.storage.ReservationS.GetAll(allReservations)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func (s *ReservationService) GetAll(ctx *context.Context, allReservations *r.Get
 	return reservations, nil
 }
 
-func (s *ReservationService) Update(ctx *context.Context, reservation *r.ReservationUpdate)(*r.Reservation, error){
+func (s *ReservationService) Update(ctx context.Context, reservation *r.ReservationUpdate) (*r.Reservation, error) {
 	resp, err := s.storage.ReservationS.Update(reservation)
 
 	if err != nil {
@@ -57,7 +57,7 @@ func (s *ReservationService) Update(ctx *context.Context, reservation *r.Reserva
 	return resp, nil
 }
 
-func (s *ReservationService) Delete(ctx *context.Context, idReq *r.GetByIdReq)(*r.Void, error){
+func (s *ReservationService) Delete(ctx context.Context, idReq *r.GetByIdReq) (*r.Void, error) {
 	_, err := s.storage.ReservationS.Delete(idReq)
 
 	return nil, err

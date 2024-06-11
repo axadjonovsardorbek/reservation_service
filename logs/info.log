@@ -8,3 +8,13 @@
 [ERROR]  2024/06/11 13:46:38 checkErr.go:17: pq: role "mrbek" does not exist
 [INFO]  2024/06/11 13:48:17 main.go:32: Server is running on port  :8088
 [INFO]  2024/06/11 14:46:42 main.go:32: Server is running on port  :8088
+[ERROR]  2024/06/11 19:02:40 checkErr.go:17: sql: unknown driver "postgres" (forgotten import?)
+[ERROR]  2024/06/11 19:02:58 checkErr.go:17: pq: password authentication failed for user "postgres"
+[ERROR]  2024/06/11 19:14:42 reservation.go:50: Error while creating reservation
+[INFO]  2024/06/11 19:16:36 reservation.go:61: Successfully created reservation
+[INFO]  2024/06/11 19:17:28 reservation.go:61: Successfully created reservation
+[ERROR]  2024/06/11 19:20:34 reservation.go:229: Error while deleting reservation
+[ERROR]  2024/06/11 19:22:49 reservation.go:215: Error while updating reservation
+[ERROR]  2024/06/11 19:23:32 reservation.go:215: Error while updating reservation
+[ERROR]  2024/06/11 19:23:43 reservation.go:215: Error while updating reservation
+[ERROR]  2024/06/11 19:24:04 reservation.go:215: Error while updating reservation
