@@ -36,7 +36,7 @@ func NewMenuService(storage *st.Storage) *MenuService {
 // 	return resp, nil
 // }
 
-// func (s *MenuService) GetAll(ctx *context.Context, allMenus *r.GetAllMenuReq) (*r.GetAllMenuRes, error) {
+// func (s *MenuService) GetAll(ctx context.Context, allMenus *r.GetAllMenuReq) (*r.GetAllMenuRes, error) {
 // 	items, err := s.storage.MenuS.GetAll(allMenus)
 
 // 	if err != nil {
@@ -46,7 +46,7 @@ func NewMenuService(storage *st.Storage) *MenuService {
 // 	return items, nil
 // }
 
-// func (s *MenuService) Update(ctx *context.Context, menu *r.MenuUpdate) (*r.Menu, error) {
+// func (s *MenuService) Update(ctx context.Context, menu *r.MenuUpdate) (*r.Menu, error) {
 // 	resp, err := s.storage.MenuS.Update(menu)
 
 // 	if err != nil {
@@ -56,7 +56,7 @@ func NewMenuService(storage *st.Storage) *MenuService {
 // 	return resp, nil
 // }
 
-// func (s *MenuService) Delete(ctx *context.Context, idReq *r.GetByIdReq) (*r.Void, error) {
+// func (s *MenuService) Delete(ctx context.Context, idReq *r.GetByIdReq) (*r.Void, error) {
 // 	_, err := s.storage.MenuS.Delete(idReq)
 
 // 	return nil, err

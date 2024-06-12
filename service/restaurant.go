@@ -36,7 +36,7 @@ func NewRestaurantService(storage *st.Storage) *RestaurantService {
 // 	return resp, nil
 // }
 
-// func (s *RestaurantService) GetAll(ctx *context.Context, allRestaurants *r.GetAllRestaurantReq)(*r.GetAllRestaurantRes, error){
+// func (s *RestaurantService) GetAll(ctx context.Context, allRestaurants *r.GetAllRestaurantReq)(*r.GetAllRestaurantRes, error){
 // 	restaurants, err := s.storage.RestaurantS.GetAll(allRestaurants)
 
 // 	if err != nil {
@@ -46,7 +46,7 @@ func NewRestaurantService(storage *st.Storage) *RestaurantService {
 // 	return restaurants, nil
 // }
 
-// func (s *RestaurantService) Update(ctx *context.Context, restaurant *r.RestaurantUpdate)(*r.Restaurant, error){
+// func (s *RestaurantService) Update(ctx context.Context, restaurant *r.RestaurantUpdate)(*r.Restaurant, error){
 // 	resp, err := s.storage.RestaurantS.Update(restaurant)
 
 // 	if err != nil {
@@ -56,7 +56,7 @@ func NewRestaurantService(storage *st.Storage) *RestaurantService {
 // 	return resp, nil
 // }
 
-// func (s *RestaurantService) Delete(ctx *context.Context, idReq *r.GetByIdReq)(*r.Void, error){
+// func (s *RestaurantService) Delete(ctx context.Context, idReq *r.GetByIdReq)(*r.Void, error){
 // 	_, err := s.storage.RestaurantS.Delete(idReq)
 
 // 	return nil, err

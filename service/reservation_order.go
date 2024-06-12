@@ -36,7 +36,7 @@ func NewReservationOrderService(storage *st.Storage) *ReservationOrderService {
 // 	return resp, nil
 // }
 
-// func (s *ReservationOrderService) GetAll(ctx *context.Context, allOrders *r.GetAllReservationOrderReq)(*r.GetAllReservationOrderRes, error){
+// func (s *ReservationOrderService) GetAll(ctx context.Context, allOrders *r.GetAllReservationOrderReq)(*r.GetAllReservationOrderRes, error){
 // 	orders, err := s.storage.ReservationOrderS.GetAll(allOrders)
 
 // 	if err != nil {
@@ -46,7 +46,7 @@ func NewReservationOrderService(storage *st.Storage) *ReservationOrderService {
 // 	return orders, nil
 // }
 
-// func (s *ReservationOrderService) Update(ctx *context.Context, reservation *r.ReservationOrderUpdate)(*r.ReservationOrderRes, error){
+// func (s *ReservationOrderService) Update(ctx context.Context, reservation *r.ReservationOrderUpdate)(*r.ReservationOrderRes, error){
 // 	resp, err := s.storage.ReservationOrderS.Update(reservation)
 
 // 	if err != nil {
@@ -56,7 +56,7 @@ func NewReservationOrderService(storage *st.Storage) *ReservationOrderService {
 // 	return resp, nil
 // }
 
-// func (s *ReservationOrderService) Delete(ctx *context.Context, idReq *r.GetByIdReq)(*r.Void, error){
+// func (s *ReservationOrderService) Delete(ctx context.Context, idReq *r.GetByIdReq)(*r.Void, error){
 // 	_, err := s.storage.ReservationOrderS.Delete(idReq)
 
 // 	return nil, err
