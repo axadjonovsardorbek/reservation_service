@@ -34,6 +34,15 @@ func(o *ReservationOrderRepo) Update(*r.ReservationOrderUpdate) (*r.ReservationO
 	return nil, nil
 }
 
-func(o *ReservationOrderRepo) Delete(*r.GetByIdReq) (*r.Void, error){
-	return nil, nil
+func(o *ReservationOrderRepo) Delete(req *r.GetByIdReq) (*r.Void, error){
+	res := r.Void{}
+
+	query := `UPDATE reservation_orders SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1`
+	_, err := o.db.Exec(query, req.Id)
+	if err != nil {
+		o.Logger.ERROR.Println("Error while deleting reservation_order")
+		return nil, err
+	}
+
+	return &res, nil
 }
