@@ -21,8 +21,6 @@ func NewReservationRepo(db *sql.DB, logger *logger.Logger) *ReservationRepo {
 }
 
 func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error) {
-	fmt.Println(1, r)
-	fmt.Println(2, req)
 	id := uuid.New().String()
 	res := pb.Reservation{}
 
@@ -43,7 +41,6 @@ func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error
 	var reservationTime time.Time
 
 	row := r.db.QueryRow(query, id, req.UserId, req.RestaurantId, req.ReservationTime, req.Status)
-	fmt.Println(3, row)
 	err := row.Scan(
 		&res.Id,
 		&res.UserId,
@@ -59,7 +56,6 @@ func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error
 	req.ReservationTime = reservationTime.Format("2006-01-02")
 
 	r.Logger.INFO.Println("Successfully created reservation")
-	fmt.Println(4, res)
 	return &res, nil
 }
 
