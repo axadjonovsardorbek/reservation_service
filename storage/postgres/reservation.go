@@ -3,6 +3,7 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"reservation-service/client"
 	"reservation-service/config/logger"
 	pb "reservation-service/genproto/reservation"
 	"strings"
@@ -49,7 +50,7 @@ func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error
 		&res.Status,
 	)
 	if err != nil {
-		r.Logger.ERROR.Println("Error while creating reservation")
+		r.Logger.ERROR.Println("Error while creating reservation: ", err)
 		return nil, err
 	}
 
@@ -60,33 +61,31 @@ func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error
 }
 
 func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
-	res := pb.ReservationRes{}
-	query := `SELECT 
-					r.id, 
-					u.id, 
-					u.username, 
-					u.email, 
-					rs.id, 
-					rs.name, 
-					rs.address, 
-					rs.phone_number, 
-					rs.description, 
-					r.reservation_time, 
-					r.status 
+	var res *pb.ReservationRes
+
+	query := `SELECT
+					r.id,
+					rs.id as restaurant_id,
+					rs.name,
+					rs.address,
+					rs.phone_number,
+					rs.description,
+					r.reservation_time,
+					r.status
 				FROM reservations r
-				JOIN users u ON r.user_id = u.id 
 				JOIN restaurants rs ON r.restaurant_id = rs.id
-				WHERE r.id = $1 AND deleted_at=0`
+				WHERE r.id = $1 AND r.deleted_at=0`
+
+	//query := `SELECT id, reservation_time, status from reservations WHERE id = $1`
 
 	row := r.db.QueryRow(query, id.Id)
 
 	var reservationTime time.Time
 
+	fmt.Println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", res.User)
+
 	err := row.Scan(
 		&res.Id,
-		&res.User.Id,
-		&res.User.Username,
-		&res.User.Email,
 		&res.Restaurant.Id,
 		&res.Restaurant.Name,
 		&res.Restaurant.Address,
@@ -97,11 +96,33 @@ func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
 	)
 
 	if err != nil {
-		r.Logger.ERROR.Println("Error while getting reservation by id")
+		r.Logger.ERROR.Println("Error while getting reservation by id : ", err)
 		return nil, err
 	}
 
+	query = `SELECT user_id from reservations WHERE id = $1`
+	row = r.db.QueryRow(query, id.Id)
+
+	var userId string
+	err = row.Scan(&userId)
+
+	us, err := client.GetUser(userId)
+	if err != nil {
+		r.Logger.ERROR.Println("Error while getting user : ", err)
+		return nil, err
+	}
+
+	//fmt.Printf("///////////////////// ", res)
+	fmt.Println("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", res.User)
+
+	res.User.Id = us.ID
+	res.User.Username = us.Username
+	res.User.Email = us.Email
+	fmt.Printf("********************", res)
+
 	res.ReservationTime = reservationTime.Format("2006-01-02")
+
+	fmt.Printf("///////////////////// ", res)
 
 	return &res, nil
 }
@@ -141,8 +162,9 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 
 	var defaultLimit int32
 	err := r.db.QueryRow("SELECT COUNT(1) FROM reservation WHERE deleted_at=0").Scan(&defaultLimit)
+
 	if err != nil {
-		r.Logger.ERROR.Println("Error while get count")
+		r.Logger.ERROR.Println("Error while get count : ", err)
 		return nil, err
 	}
 	if req.Filter.Limit == 0 {
@@ -156,7 +178,7 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 
 	rows, err := r.db.Query(query, args...)
 	if err != nil {
-		r.Logger.ERROR.Println("Error while getting all reservations")
+		r.Logger.ERROR.Println("Error while getting all reservations : ", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -180,7 +202,7 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 			&rs.Status,
 		)
 		if err != nil {
-			r.Logger.ERROR.Println("Error while scan all reservations")
+			r.Logger.ERROR.Println("Error while scan all reservations : ", err)
 			return nil, err
 		}
 
@@ -208,11 +230,12 @@ func (r *ReservationRepo) Update(req *pb.ReservationUpdate) (*pb.Reservation, er
 		&reservationTime,
 	)
 	if err != nil {
-		r.Logger.ERROR.Println("Error while updating reservation")
+		r.Logger.ERROR.Println("Error while updating reservation : ", err)
 		return nil, err
 	}
 	res.ReservationTime = reservationTime.Format("2006-01-02")
 
+	r.Logger.INFO.Println("Successfully updated reservation")
 	return &res, nil
 }
 
@@ -222,9 +245,10 @@ func (r *ReservationRepo) Delete(req *pb.GetByIdReq) (*pb.Void, error) {
 	query := `UPDATE reservations SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1`
 	_, err := r.db.Exec(query, req.Id)
 	if err != nil {
-		r.Logger.ERROR.Println("Error while deleting reservation")
+		r.Logger.ERROR.Println("Error while deleting reservation : ", err)
 		return nil, err
 	}
 
+	r.Logger.INFO.Println("Successfully deleted reservation")
 	return &res, nil
 }
