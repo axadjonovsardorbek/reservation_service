@@ -61,7 +61,10 @@ func (r *ReservationRepo) Create(req *pb.ReservationReq) (*pb.Reservation, error
 }
 
 func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
-	var res *pb.ReservationRes
+	res := &pb.ReservationRes{
+		User:       &pb.UserResp{},
+		Restaurant: &pb.Restaurant{},
+	}
 
 	query := `SELECT
 					r.id,
@@ -76,13 +79,9 @@ func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
 				JOIN restaurants rs ON r.restaurant_id = rs.id
 				WHERE r.id = $1 AND r.deleted_at=0`
 
-	//query := `SELECT id, reservation_time, status from reservations WHERE id = $1`
-
 	row := r.db.QueryRow(query, id.Id)
 
 	var reservationTime time.Time
-
-	fmt.Println("wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", res.User)
 
 	err := row.Scan(
 		&res.Id,
@@ -94,7 +93,6 @@ func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
 		&reservationTime,
 		&res.Status,
 	)
-
 	if err != nil {
 		r.Logger.ERROR.Println("Error while getting reservation by id : ", err)
 		return nil, err
@@ -105,6 +103,10 @@ func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
 
 	var userId string
 	err = row.Scan(&userId)
+	if err != nil {
+		r.Logger.ERROR.Println("Error while getting user id : ", err)
+		return nil, err
+	}
 
 	us, err := client.GetUser(userId)
 	if err != nil {
@@ -112,41 +114,32 @@ func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
 		return nil, err
 	}
 
-	//fmt.Printf("///////////////////// ", res)
-	fmt.Println("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq", res.User)
-
 	res.User.Id = us.ID
 	res.User.Username = us.Username
 	res.User.Email = us.Email
-	fmt.Printf("********************", res)
 
 	res.ReservationTime = reservationTime.Format("2006-01-02")
 
-	fmt.Printf("///////////////////// ", res)
-
-	return &res, nil
+	return res, nil
 }
 
 func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReservationRes, error) {
-	res := pb.GetAllReservationRes{
+	res := &pb.GetAllReservationRes{
 		Reservation: []*pb.ReservationRes{},
 	}
 
-	query := `SELECT 
-                    r.id, 
-                    u.id, 
-                    u.username, 
-                    u.email, 
-                    rs.id, 
-                    rs.name, 
-                    rs.address, 
-                    rs.phone_number, 
-                    rs.description, 
-                    r.reservation_time, 
-                    r.status 
-                FROM reservations r
-                JOIN users u ON r.user_id = u.id 
-                JOIN restaurants rs ON r.restaurant_id = rs.id`
+	query := `SELECT
+					r.id,
+					rs.id as restaurant_id,
+					rs.name,
+					rs.address,
+					rs.phone_number,
+					rs.description,
+					r.reservation_time,
+					r.status
+				FROM reservations r
+				JOIN restaurants rs ON r.restaurant_id = rs.id
+				WHERE r.deleted_at=0`
 
 	var args []interface{}
 	var conditions []string
@@ -157,21 +150,18 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 	}
 
 	if len(conditions) > 0 {
-		query += " WHERE " + strings.Join(conditions, " AND ")
+		query += " AND " + strings.Join(conditions, " AND ")
 	}
 
 	var defaultLimit int32
-	err := r.db.QueryRow("SELECT COUNT(1) FROM reservation WHERE deleted_at=0").Scan(&defaultLimit)
-
+	err := r.db.QueryRow("SELECT COUNT(1) FROM reservations WHERE deleted_at=0").Scan(&defaultLimit)
 	if err != nil {
-		r.Logger.ERROR.Println("Error while get count : ", err)
+		r.Logger.ERROR.Println("Error while getting count : ", err)
 		return nil, err
 	}
 	if req.Filter.Limit == 0 {
 		req.Filter.Limit = defaultLimit
 	}
-
-	fmt.Println(query, args)
 
 	args = append(args, req.Filter.Limit, req.Filter.Offset)
 	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(args)-1, len(args))
@@ -184,15 +174,15 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 	defer rows.Close()
 
 	for rows.Next() {
-		rs := pb.ReservationRes{}
+		rs := &pb.ReservationRes{
+			User:       &pb.UserResp{},
+			Restaurant: &pb.Restaurant{},
+		}
 
 		var reservationTime time.Time
 
 		err := rows.Scan(
 			&rs.Id,
-			&rs.User.Id,
-			&rs.User.Username,
-			&rs.User.Email,
 			&rs.Restaurant.Id,
 			&rs.Restaurant.Name,
 			&rs.Restaurant.Address,
@@ -202,16 +192,37 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 			&rs.Status,
 		)
 		if err != nil {
-			r.Logger.ERROR.Println("Error while scan all reservations : ", err)
+			r.Logger.ERROR.Println("Error while scanning all reservations : ", err)
 			return nil, err
 		}
 
+		query = `SELECT user_id from reservations WHERE id = $1`
+		row := r.db.QueryRow(query, rs.Id)
+
+		var userId string
+		err = row.Scan(&userId)
+		if err != nil {
+			r.Logger.ERROR.Println("Error while getting user id : ", err)
+			return nil, err
+		}
+
+		us, err := client.GetUser(userId)
+		if err != nil {
+			r.Logger.ERROR.Println("Error while getting user : ", err)
+			return nil, err
+		}
+
+		rs.User.Id = us.ID
+		rs.User.Username = us.Username
+		rs.User.Email = us.Email
+
 		rs.ReservationTime = reservationTime.Format("2006-01-02")
 
-		res.Reservation = append(res.Reservation, &rs)
+		res.Reservation = append(res.Reservation, rs)
 	}
 
-	return &res, nil
+	r.Logger.INFO.Println("Successfully fetched all reservations")
+	return res, nil
 }
 
 func (r *ReservationRepo) Update(req *pb.ReservationUpdate) (*pb.Reservation, error) {

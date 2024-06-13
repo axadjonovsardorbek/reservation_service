@@ -18,3 +18,7 @@
 [ERROR]  2024/06/11 19:23:32 reservation.go:215: Error while updating reservation
 [ERROR]  2024/06/11 19:23:43 reservation.go:215: Error while updating reservation
 [ERROR]  2024/06/11 19:24:04 reservation.go:215: Error while updating reservation
+[INFO]  2024/06/13 00:28:40 reservation.go:123: Successfully fetched reservation by id
+[INFO]  2024/06/13 00:32:43 reservation.go:123: Successfully fetched reservation by id
+[ERROR]  2024/06/13 00:33:11 reservation.go:176: Error while getting all reservations :  pq: relation "users" does not exist
+[INFO]  2024/06/13 00:40:12 reservation.go:224: Successfully fetched all reservations
