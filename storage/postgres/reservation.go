@@ -264,10 +264,29 @@ func (r *ReservationRepo) Delete(req *pb.GetByIdReq) (*pb.Void, error) {
 	return &res, nil
 }
 
-
-func (r *ReservationRepo) CheckTime(req *pb.CheckTimeReq) (*pb.CheckTimeReq, error) {
-	var res pb.CheckTimeReq
+func (r *ReservationRepo) CheckTime(req *pb.CheckTimeReq) (*pb.CheckTimeResp, error) {
+	var res pb.CheckTimeResp
 
 	query := `SELECT reservation_time FROM reservations WHERE restaurant_id=$1 and deleted_at=0`
 	rows, err := r.db.Query(query, req.RestaurantId)
+	if err != nil {
+		r.Logger.ERROR.Println("Error while checking time : ", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var reservationTime time.Time
+		err := rows.Scan(&reservationTime)
+		if err != nil {
+			r.Logger.ERROR.Println("Error while scanning time : ", err)
+			return nil, err
+		}
+		if req.Time == reservationTime.Format("2006-01-02 15:04:05") {
+			res.IsBooked = false
+			return &res, nil
+		}
+	}
+	res.IsBooked = true
+	return &res, nil
 }
