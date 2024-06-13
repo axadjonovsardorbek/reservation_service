@@ -34,3 +34,13 @@
 [ERROR]  2024/06/13 11:21:27 menu.go:84: Error while getting menu by id :  pq: syntax error at or near ","
 [ERROR]  2024/06/13 11:23:27 menu.go:93: Error while getting menu by id :  pq: column reference "id" is ambiguous
 [ERROR]  2024/06/13 11:24:54 menu.go:94: Error while getting menu by id :  pq: column reference "id" is ambiguous
+[ERROR]  2024/06/13 12:42:15 checkErr.go:17: pq: password authentication failed for user "postgres"
+[ERROR]  2024/06/13 13:05:03 restaurant.go:53: Error while creating restaurant
+[INFO]  2024/06/13 13:09:28 restaurant.go:57: Successfully created restaurant
+[INFO]  2024/06/13 13:10:58 restaurant.go:57: Successfully created restaurant
+[INFO]  2024/06/13 13:11:21 restaurant.go:57: Successfully created restaurant
+[INFO]  2024/06/13 13:11:22 restaurant.go:57: Successfully created restaurant
+[INFO]  2024/06/13 14:01:50 restaurant.go:185: Successfully deleted restaurant
+[ERROR]  2024/06/13 14:03:14 reservation.go:53: Error while creating reservation:  pq: invalid input value for enum status: "foyalanilmoqda"
+[INFO]  2024/06/13 14:03:22 reservation.go:59: Successfully created reservation
+[INFO]  2024/06/13 14:05:06 reservation.go:249: Successfully updated reservation
