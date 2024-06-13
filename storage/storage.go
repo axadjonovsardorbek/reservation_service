@@ -28,7 +28,7 @@ type ReservationOrderI interface {
 	Create(*r.ReservationOrderReq) (*r.ReservationOrderRes, error)
 	Get(*r.GetByIdReq) (*r.ReservationOrderRes, error)
 	GetAll(*r.GetAllReservationOrderReq) (*r.GetAllReservationOrderRes, error)
-	Update(*r.ReservationOrderUpdate) (*r.ReservationOrderRes, error)
+	Update(*r.ReservationOrderUpdateReq) (*r.ReservationOrderRes, error)
 	Delete(*r.GetByIdReq) (*r.Void, error)
 }
 

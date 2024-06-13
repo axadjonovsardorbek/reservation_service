@@ -44,3 +44,11 @@
 [ERROR]  2024/06/13 14:03:14 reservation.go:53: Error while creating reservation:  pq: invalid input value for enum status: "foyalanilmoqda"
 [INFO]  2024/06/13 14:03:22 reservation.go:59: Successfully created reservation
 [INFO]  2024/06/13 14:05:06 reservation.go:249: Successfully updated reservation
+[ERROR]  2024/06/13 15:53:57 reservation_order.go:53: Error while creating reservation_orders
+[ERROR]  2024/06/13 15:59:12 reservation_order.go:71: Error while creating reservation_orders
+[ERROR]  2024/06/13 16:00:21 reservation_order.go:71: Error while creating reservation_orders
+[ERROR]  2024/06/13 16:03:37 reservation_order.go:95: Error while creating reservation_orders
+[INFO]  2024/06/13 16:06:15 reservation_order.go:113: Successfully created reservation_order
+[ERROR]  2024/06/13 17:53:06 reservation_order.go:362: Error while updating reservation_order: pq: invalid input syntax for type uuid: "string"
+[ERROR]  2024/06/13 17:53:23 reservation_order.go:362: Error while updating reservation_order: pq: invalid input syntax for type uuid: "string"
+[ERROR]  2024/06/13 17:54:02 reservation_order.go:362: Error while updating reservation_order: pq: insert or update on table "reservation_orders" violates foreign key constraint "reservation_orders_reservation_id_fkey"

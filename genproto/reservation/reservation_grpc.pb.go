@@ -19,11 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	ReservationService_Create_FullMethodName = "/reservation.ReservationService/Create"
-	ReservationService_Get_FullMethodName    = "/reservation.ReservationService/Get"
-	ReservationService_GetAll_FullMethodName = "/reservation.ReservationService/GetAll"
-	ReservationService_Update_FullMethodName = "/reservation.ReservationService/Update"
-	ReservationService_Delete_FullMethodName = "/reservation.ReservationService/Delete"
+	ReservationService_Create_FullMethodName    = "/reservation.ReservationService/Create"
+	ReservationService_Get_FullMethodName       = "/reservation.ReservationService/Get"
+	ReservationService_GetAll_FullMethodName    = "/reservation.ReservationService/GetAll"
+	ReservationService_Update_FullMethodName    = "/reservation.ReservationService/Update"
+	ReservationService_Delete_FullMethodName    = "/reservation.ReservationService/Delete"
+	ReservationService_CheckTime_FullMethodName = "/reservation.ReservationService/CheckTime"
 )
 
 // ReservationServiceClient is the client API for ReservationService service.
@@ -35,6 +36,7 @@ type ReservationServiceClient interface {
 	GetAll(ctx context.Context, in *GetAllReservationReq, opts ...grpc.CallOption) (*GetAllReservationRes, error)
 	Update(ctx context.Context, in *ReservationUpdate, opts ...grpc.CallOption) (*Reservation, error)
 	Delete(ctx context.Context, in *GetByIdReq, opts ...grpc.CallOption) (*Void, error)
+	CheckTime(ctx context.Context, in *CheckTimeReq, opts ...grpc.CallOption) (*CheckTimeResp, error)
 }
 
 type reservationServiceClient struct {
@@ -90,6 +92,15 @@ func (c *reservationServiceClient) Delete(ctx context.Context, in *GetByIdReq, o
 	return out, nil
 }
 
+func (c *reservationServiceClient) CheckTime(ctx context.Context, in *CheckTimeReq, opts ...grpc.CallOption) (*CheckTimeResp, error) {
+	out := new(CheckTimeResp)
+	err := c.cc.Invoke(ctx, ReservationService_CheckTime_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ReservationServiceServer is the server API for ReservationService service.
 // All implementations must embed UnimplementedReservationServiceServer
 // for forward compatibility
@@ -99,6 +110,7 @@ type ReservationServiceServer interface {
 	GetAll(context.Context, *GetAllReservationReq) (*GetAllReservationRes, error)
 	Update(context.Context, *ReservationUpdate) (*Reservation, error)
 	Delete(context.Context, *GetByIdReq) (*Void, error)
+	CheckTime(context.Context, *CheckTimeReq) (*CheckTimeResp, error)
 	mustEmbedUnimplementedReservationServiceServer()
 }
 
@@ -120,6 +132,9 @@ func (UnimplementedReservationServiceServer) Update(context.Context, *Reservatio
 }
 func (UnimplementedReservationServiceServer) Delete(context.Context, *GetByIdReq) (*Void, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedReservationServiceServer) CheckTime(context.Context, *CheckTimeReq) (*CheckTimeResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckTime not implemented")
 }
 func (UnimplementedReservationServiceServer) mustEmbedUnimplementedReservationServiceServer() {}
 
@@ -224,6 +239,24 @@ func _ReservationService_Delete_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ReservationService_CheckTime_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CheckTimeReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReservationServiceServer).CheckTime(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ReservationService_CheckTime_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReservationServiceServer).CheckTime(ctx, req.(*CheckTimeReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ReservationService_ServiceDesc is the grpc.ServiceDesc for ReservationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -250,6 +283,10 @@ var ReservationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Delete",
 			Handler:    _ReservationService_Delete_Handler,
+		},
+		{
+			MethodName: "CheckTime",
+			Handler:    _ReservationService_CheckTime_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

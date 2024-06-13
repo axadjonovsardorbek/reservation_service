@@ -17,10 +17,10 @@ func NewMenuRepo(db *sql.DB, logger *logger.Logger) *MenuRepo {
 	return &MenuRepo{db: db, Logger: logger}
 }
 
-func(m *MenuRepo) Create(menu *pb.MenuReq) (*pb.Menu, error){
+func (m *MenuRepo) Create(menu *pb.MenuReq) (*pb.Menu, error) {
 
 	id := uuid.New().String()
-	res :=pb.Menu{}
+	res := pb.Menu{}
 
 	query := `
 	INSERT INTO menu (
@@ -54,16 +54,16 @@ func(m *MenuRepo) Create(menu *pb.MenuReq) (*pb.Menu, error){
 	}
 
 	m.Logger.INFO.Println("Successfully created menu")
-	
+
 	return &res, nil
 }
 
 func (m *MenuRepo) Get(id *pb.GetByIdReq) (*pb.MenuRes, error) {
-    res := pb.MenuRes{
-        Restaurant: &pb.Restaurant{},
-    }
-// 
-    query := `SELECT 
+	res := pb.MenuRes{
+		Restaurant: &pb.Restaurant{},
+	}
+
+	query := `SELECT 
                 m.id, 
                 r.id as restaurant_id,
                 r.name as restaurant_name,
@@ -77,28 +77,28 @@ func (m *MenuRepo) Get(id *pb.GetByIdReq) (*pb.MenuRes, error) {
             JOIN restaurants r ON m.restaurant_id = r.id
             WHERE m.id = $1 AND m.deleted_at=0`
 
-    row := m.db.QueryRow(query, id.Id)
+	row := m.db.QueryRow(query, id.Id)
 
-    err := row.Scan(
-        &res.Id,
-        &res.Restaurant.Id,
-        &res.Restaurant.Name,
-        &res.Restaurant.Description,
-        &res.Restaurant.Address,
-        &res.Restaurant.PhoneNumber,
-        &res.Name,
-        &res.Description,
-        &res.Price,
-    )
-    if err != nil {
-        m.Logger.ERROR.Println("Error while getting menu by id : ", err)
-        return nil, err
-    }
+	err := row.Scan(
+		&res.Id,
+		&res.Restaurant.Id,
+		&res.Restaurant.Name,
+		&res.Restaurant.Description,
+		&res.Restaurant.Address,
+		&res.Restaurant.PhoneNumber,
+		&res.Name,
+		&res.Description,
+		&res.Price,
+	)
+	if err != nil {
+		m.Logger.ERROR.Println("Error while getting menu by id : ", err)
+		return nil, err
+	}
 
-    return &res, nil
+	return &res, nil
 }
 
-func(m *MenuRepo) GetAll(req *pb.GetAllMenuReq) (*pb.GetAllMenuRes, error){
+func (m *MenuRepo) GetAll(req *pb.GetAllMenuReq) (*pb.GetAllMenuRes, error) {
 
 	res := &pb.GetAllMenuRes{
 		Menu: []*pb.MenuRes{},
@@ -119,39 +119,39 @@ func(m *MenuRepo) GetAll(req *pb.GetAllMenuReq) (*pb.GetAllMenuRes, error){
 			WHERE m.deleted_at=0 LIMIT $1 OFFSET $2`
 
 	rows, err := m.db.Query(query, req.Filter.Limit, req.Filter.Offset)
-	if err!= nil {
-        m.Logger.ERROR.Println("Error while getting menus : ", err)
-        return nil, err
-    }
+	if err != nil {
+		m.Logger.ERROR.Println("Error while getting menus : ", err)
+		return nil, err
+	}
 	defer rows.Close()
 
 	for rows.Next() {
 		menu := pb.MenuRes{
 			Restaurant: &pb.Restaurant{},
 		}
-        err := rows.Scan(
-            &menu.Id,
-            &menu.Restaurant.Id,
-            &menu.Restaurant.Name,
-            &menu.Restaurant.Description,
-            &menu.Restaurant.Address,
-            &menu.Restaurant.PhoneNumber,
-            &menu.Name,
-            &menu.Description,
-            &menu.Price,
-        )
-        if err!= nil {
-            m.Logger.ERROR.Println("Error while getting menus : ", err)
-            return nil, err
-        }
-        res.Menu = append(res.Menu, &menu)
-    }
+		err := rows.Scan(
+			&menu.Id,
+			&menu.Restaurant.Id,
+			&menu.Restaurant.Name,
+			&menu.Restaurant.Description,
+			&menu.Restaurant.Address,
+			&menu.Restaurant.PhoneNumber,
+			&menu.Name,
+			&menu.Description,
+			&menu.Price,
+		)
+		if err != nil {
+			m.Logger.ERROR.Println("Error while getting menus : ", err)
+			return nil, err
+		}
+		res.Menu = append(res.Menu, &menu)
+	}
 
 	return res, nil
 }
 
-func(m *MenuRepo) Update(menu *pb.MenuUpdate) (*pb.Menu, error){
-	
+func (m *MenuRepo) Update(menu *pb.MenuUpdate) (*pb.Menu, error) {
+
 	res := pb.Menu{}
 
 	query := `
@@ -172,10 +172,10 @@ func(m *MenuRepo) Update(menu *pb.MenuUpdate) (*pb.Menu, error){
 		price
 	`
 
-	row := m.db.QueryRow(query, menu.UpdateMenu.RestaurantId, menu.UpdateMenu.Name, menu.UpdateMenu.Description, menu.UpdateMenu.Price, menu.Id)
+	row := m.db.QueryRow(query, menu.UpdateMenu.RestaurantId, menu.UpdateMenu.Name, menu.UpdateMenu.Description, menu.UpdateMenu.Price, menu.Id.Id)
 
 	err := row.Scan(
-		&res.Id, 
+		&res.Id,
 		&res.RestaurantId,
 		&res.Name,
 		&res.Description,
@@ -188,11 +188,11 @@ func(m *MenuRepo) Update(menu *pb.MenuUpdate) (*pb.Menu, error){
 	}
 
 	m.Logger.INFO.Println("Successfully updated menu")
-	
+
 	return &res, nil
 }
 
-func(m *MenuRepo) Delete(id *pb.GetByIdReq) (*pb.Void, error){
+func (m *MenuRepo) Delete(id *pb.GetByIdReq) (*pb.Void, error) {
 	res := pb.Void{}
 
 	query := `UPDATE menu SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1 and deleted_at=0`

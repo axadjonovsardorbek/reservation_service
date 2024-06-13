@@ -118,7 +118,7 @@ func (r *ReservationRepo) Get(id *pb.GetByIdReq) (*pb.ReservationRes, error) {
 	res.User.Username = us.Username
 	res.User.Email = us.Email
 
-	res.ReservationTime = reservationTime.Format("2006-01-02")
+	res.ReservationTime = reservationTime.Format("2006-01-02 15:04:05")
 
 	return res, nil
 }
@@ -244,7 +244,7 @@ func (r *ReservationRepo) Update(req *pb.ReservationUpdate) (*pb.Reservation, er
 		r.Logger.ERROR.Println("Error while updating reservation : ", err)
 		return nil, err
 	}
-	res.ReservationTime = reservationTime.Format("2006-01-02")
+	res.ReservationTime = reservationTime.Format("2006-01-02 15:04:05")
 
 	r.Logger.INFO.Println("Successfully updated reservation")
 	return &res, nil
@@ -262,4 +262,12 @@ func (r *ReservationRepo) Delete(req *pb.GetByIdReq) (*pb.Void, error) {
 
 	r.Logger.INFO.Println("Successfully deleted reservation")
 	return &res, nil
+}
+
+
+func (r *ReservationRepo) CheckTime(req *pb.CheckTimeReq) (*pb.CheckTimeReq, error) {
+	var res pb.CheckTimeReq
+
+	query := `SELECT reservation_time FROM reservations WHERE restaurant_id=$1 and deleted_at=0`
+	rows, err := r.db.Query(query, req.RestaurantId)
 }

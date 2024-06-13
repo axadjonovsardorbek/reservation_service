@@ -33,7 +33,7 @@ type ReservationOrderServiceClient interface {
 	Create(ctx context.Context, in *ReservationOrderReq, opts ...grpc.CallOption) (*ReservationOrderRes, error)
 	Get(ctx context.Context, in *GetByIdReq, opts ...grpc.CallOption) (*ReservationOrderRes, error)
 	GetAll(ctx context.Context, in *GetAllReservationOrderReq, opts ...grpc.CallOption) (*GetAllReservationOrderRes, error)
-	Update(ctx context.Context, in *ReservationOrderUpdate, opts ...grpc.CallOption) (*ReservationOrderReq, error)
+	Update(ctx context.Context, in *ReservationOrderUpdateReq, opts ...grpc.CallOption) (*ReservationOrderRes, error)
 	Delete(ctx context.Context, in *GetByIdReq, opts ...grpc.CallOption) (*Void, error)
 }
 
@@ -72,8 +72,8 @@ func (c *reservationOrderServiceClient) GetAll(ctx context.Context, in *GetAllRe
 	return out, nil
 }
 
-func (c *reservationOrderServiceClient) Update(ctx context.Context, in *ReservationOrderUpdate, opts ...grpc.CallOption) (*ReservationOrderReq, error) {
-	out := new(ReservationOrderReq)
+func (c *reservationOrderServiceClient) Update(ctx context.Context, in *ReservationOrderUpdateReq, opts ...grpc.CallOption) (*ReservationOrderRes, error) {
+	out := new(ReservationOrderRes)
 	err := c.cc.Invoke(ctx, ReservationOrderService_Update_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -97,7 +97,7 @@ type ReservationOrderServiceServer interface {
 	Create(context.Context, *ReservationOrderReq) (*ReservationOrderRes, error)
 	Get(context.Context, *GetByIdReq) (*ReservationOrderRes, error)
 	GetAll(context.Context, *GetAllReservationOrderReq) (*GetAllReservationOrderRes, error)
-	Update(context.Context, *ReservationOrderUpdate) (*ReservationOrderReq, error)
+	Update(context.Context, *ReservationOrderUpdateReq) (*ReservationOrderRes, error)
 	Delete(context.Context, *GetByIdReq) (*Void, error)
 	mustEmbedUnimplementedReservationOrderServiceServer()
 }
@@ -115,7 +115,7 @@ func (UnimplementedReservationOrderServiceServer) Get(context.Context, *GetByIdR
 func (UnimplementedReservationOrderServiceServer) GetAll(context.Context, *GetAllReservationOrderReq) (*GetAllReservationOrderRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAll not implemented")
 }
-func (UnimplementedReservationOrderServiceServer) Update(context.Context, *ReservationOrderUpdate) (*ReservationOrderReq, error) {
+func (UnimplementedReservationOrderServiceServer) Update(context.Context, *ReservationOrderUpdateReq) (*ReservationOrderRes, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedReservationOrderServiceServer) Delete(context.Context, *GetByIdReq) (*Void, error) {
@@ -190,7 +190,7 @@ func _ReservationOrderService_GetAll_Handler(srv interface{}, ctx context.Contex
 }
 
 func _ReservationOrderService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReservationOrderUpdate)
+	in := new(ReservationOrderUpdateReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -202,7 +202,7 @@ func _ReservationOrderService_Update_Handler(srv interface{}, ctx context.Contex
 		FullMethod: ReservationOrderService_Update_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ReservationOrderServiceServer).Update(ctx, req.(*ReservationOrderUpdate))
+		return srv.(ReservationOrderServiceServer).Update(ctx, req.(*ReservationOrderUpdateReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

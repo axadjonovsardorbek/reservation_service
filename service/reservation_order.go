@@ -47,7 +47,7 @@ func (s *ReservationOrderService) GetAll(ctx context.Context, allOrders *r.GetAl
 	return orders, nil
 }
 
-func (s *ReservationOrderService) Update(ctx context.Context, reservation *r.ReservationOrderUpdate)(*r.ReservationOrderRes, error){
+func (s *ReservationOrderService) Update(ctx context.Context, reservation *r.ReservationOrderUpdateReq)(*r.ReservationOrderRes, error){
 	resp, err := s.storage.ReservationOrderS.Update(reservation)
 
 	if err != nil {
