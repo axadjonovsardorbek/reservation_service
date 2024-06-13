@@ -62,7 +62,7 @@ func (m *MenuRepo) Get(id *pb.GetByIdReq) (*pb.MenuRes, error) {
     res := pb.MenuRes{
         Restaurant: &pb.Restaurant{},
     }
-
+// 
     query := `SELECT 
                 m.id, 
                 r.id as restaurant_id,
