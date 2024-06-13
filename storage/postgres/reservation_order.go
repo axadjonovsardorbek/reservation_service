@@ -76,26 +76,26 @@ func (o *ReservationOrderRepo) GetAll(*r.GetAllReservationOrderReq) (*r.GetAllRe
 	return nil, nil
 }
 
-//func(o *ReservationOrderRepo) Update(req *r.ReservationOrderUpdate) (*r.ReservationOrderRes, error){
-//	res := r.ReservationOrderRes{}
-//
-//	query := `UPDATE reservation_orders SET reservation_id=$1, menu_item_id=$2, quantity=$3 WHERE id=$4 and deleted_at=0 RETURNING id, reservation_id, menu_item_id, quantity`
-//
-//	row := o.db.QueryRow(query, req.ReservationId, req.MenuItemId, req.Quantity, req.Id)
-//
-//	err := row.Scan(
-//		&res.Id,
-//		&res.Reservation.Id,
-//		&res.MenuItem.Id,
-//		&res.Quantity,
-//	)
-//	if err != nil {
-//		o.Logger.ERROR.Println("Error while updating reservation")
-//		return nil, err
-//	}
-//
-//	return &res, nil
-//}
+func(o *ReservationOrderRepo) Update(req *r.ReservationOrderUpdate) (*r.ReservationOrderRes, error){
+	res := r.ReservationOrderRes{}
+
+	query := `UPDATE reservation_orders SET reservation_id=$1, menu_item_id=$2, quantity=$3 WHERE id=$4 and deleted_at=0 RETURNING id, reservation_id, menu_item_id, quantity`
+
+	row := o.db.QueryRow(query, req.UpdateBody.ReservationId, req.UpdateBody.MenuItemId, req.UpdateBody.Quantity, req.Id.Id)
+
+	err := row.Scan(
+		&res.Id,
+		&res.Reservation.Id,
+		&res.MenuItem.Id,
+		&res.Quantity,
+	)
+	if err != nil {
+		o.Logger.ERROR.Println("Error while updating reservation")
+		return nil, err
+	}
+
+	return &res, nil
+}
 
 func (o *ReservationOrderRepo) Delete(req *r.GetByIdReq) (*r.Void, error) {
 	res := r.Void{}

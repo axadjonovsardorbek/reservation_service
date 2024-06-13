@@ -228,7 +228,7 @@ func (r *ReservationRepo) GetAll(req *pb.GetAllReservationReq) (*pb.GetAllReserv
 func (r *ReservationRepo) Update(req *pb.ReservationUpdate) (*pb.Reservation, error) {
 	res := pb.Reservation{}
 
-	query := `UPDATE reservations SET user_id=$1, restaurant_id=$2, reservation_time=$3, status=$4 WHERE id=$5 RETURNING id, user_id, restaurant_id, reservation_time`
+	query := `UPDATE reservations SET user_id=$1, restaurant_id=$2, reservation_time=$3, status=$4, updated_at=now() WHERE id=$5 RETURNING id, user_id, restaurant_id, reservation_time`
 
 	row := r.db.QueryRow(query, req.UpdateReservation.UserId, req.UpdateReservation.RestaurantId, req.UpdateReservation.ReservationTime, req.UpdateReservation.Status, req.Id.Id)
 

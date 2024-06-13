@@ -12,12 +12,12 @@ import (
 )
 
 type Storage struct {
-	Db     *sql.DB
-	Logger *logger.Logger
-	//  RestaurantS storage.RestaurantI
-	ReservationS storage.ReservationI
-	// ReservationOrderS storage.ReservationOrderI
-	// MenuS storage.MenuI
+	Db                *sql.DB
+	Logger            *logger.Logger
+	RestaurantS       storage.RestaurantI
+	ReservationS      storage.ReservationI
+	ReservationOrderS storage.ReservationOrderI
+	MenuS             storage.MenuI
 }
 
 func NewPostgresStorage(config config.Config, logger *logger.Logger) (*Storage, error) {
@@ -33,16 +33,16 @@ func NewPostgresStorage(config config.Config, logger *logger.Logger) (*Storage, 
 		return nil, err
 	}
 
-	//  restaurant := NewRestaurantRepo(db)
+	restaurant := NewRestaurantRepo(db, logger)
 	reservation := NewReservationRepo(db, logger)
-	//  resOrder := NewReservationOrderRepo(db)
-	//  menu := NewMenuRepo(db)
+	resOrder := NewReservationOrderRepo(db, logger)
+	menu := NewMenuRepo(db, logger)
 
 	return &Storage{
-		Db: db,
-		//   RestaurantS: restaurant,
-		ReservationS: reservation,
-		//   ReservationOrderS: resOrder,
-		//   MenuS: menu,
+		Db:                db,
+		RestaurantS:       restaurant,
+		ReservationS:      reservation,
+		ReservationOrderS: resOrder,
+		MenuS:             menu,
 	}, nil
 }

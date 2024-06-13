@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	r "reservation-service/genproto/reservation"
 	st "reservation-service/storage/postgres"
 )
@@ -16,48 +17,48 @@ func NewReservationOrderService(storage *st.Storage) *ReservationOrderService {
 	}
 }
 
-// func (s *ReservationOrderService) Create(ctx context.Context, order *r.ReservationOrderReq) (*r.ReservationOrderRes, error) {
-// 	resp, err := s.storage.ReservationOrderS.Create(order)
+func (s *ReservationOrderService) Create(ctx context.Context, order *r.ReservationOrderReq) (*r.ReservationOrderRes, error) {
+	resp, err := s.storage.ReservationOrderS.Create(order)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return resp, nil
-// }
+	return resp, nil
+}
 
-// func (s *ReservationOrderService) Get(ctx context.Context, idReq *r.GetByIdReq) (*r.ReservationOrderRes, error) {
-// 	resp, err := s.storage.ReservationOrderS.Get(idReq)
+func (s *ReservationOrderService) Get(ctx context.Context, idReq *r.GetByIdReq) (*r.ReservationOrderRes, error) {
+	resp, err := s.storage.ReservationOrderS.Get(idReq)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return resp, nil
-// }
+	return resp, nil
+}
 
-// func (s *ReservationOrderService) GetAll(ctx context.Context, allOrders *r.GetAllReservationOrderReq)(*r.GetAllReservationOrderRes, error){
-// 	orders, err := s.storage.ReservationOrderS.GetAll(allOrders)
+func (s *ReservationOrderService) GetAll(ctx context.Context, allOrders *r.GetAllReservationOrderReq)(*r.GetAllReservationOrderRes, error){
+	orders, err := s.storage.ReservationOrderS.GetAll(allOrders)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return orders, nil
-// }
+	return orders, nil
+}
 
-// func (s *ReservationOrderService) Update(ctx context.Context, reservation *r.ReservationOrderUpdate)(*r.ReservationOrderRes, error){
-// 	resp, err := s.storage.ReservationOrderS.Update(reservation)
+func (s *ReservationOrderService) Update(ctx context.Context, reservation *r.ReservationOrderUpdate)(*r.ReservationOrderRes, error){
+	resp, err := s.storage.ReservationOrderS.Update(reservation)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return resp, nil
-// }
+	return resp, nil
+}
 
-// func (s *ReservationOrderService) Delete(ctx context.Context, idReq *r.GetByIdReq)(*r.Void, error){
-// 	_, err := s.storage.ReservationOrderS.Delete(idReq)
+func (s *ReservationOrderService) Delete(ctx context.Context, idReq *r.GetByIdReq)(*r.Void, error){
+	_, err := s.storage.ReservationOrderS.Delete(idReq)
 
-// 	return nil, err
-// }
+	return nil, err
+}

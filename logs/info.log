@@ -22,3 +22,15 @@
 [INFO]  2024/06/13 00:32:43 reservation.go:123: Successfully fetched reservation by id
 [ERROR]  2024/06/13 00:33:11 reservation.go:176: Error while getting all reservations :  pq: relation "users" does not exist
 [INFO]  2024/06/13 00:40:12 reservation.go:224: Successfully fetched all reservations
+[INFO]  2024/06/13 09:43:42 reservation.go:224: Successfully fetched all reservations
+[INFO]  2024/06/13 10:08:49 restaurant.go:56: Successfully created restaurant
+[INFO]  2024/06/13 10:29:44 restaurant.go:57: Successfully created restaurant
+[INFO]  2024/06/13 10:29:44 restaurant.go:57: Successfully created restaurant
+[INFO]  2024/06/13 10:30:21 restaurant.go:185: Successfully deleted restaurant
+[INFO]  2024/06/13 10:33:23 reservation.go:59: Successfully created reservation
+[INFO]  2024/06/13 10:35:09 reservation.go:263: Successfully deleted reservation
+[INFO]  2024/06/13 10:35:28 reservation.go:224: Successfully fetched all reservations
+[INFO]  2024/06/13 10:38:19 menu.go:56: Successfully created menu
+[ERROR]  2024/06/13 11:21:27 menu.go:84: Error while getting menu by id :  pq: syntax error at or near ","
+[ERROR]  2024/06/13 11:23:27 menu.go:93: Error while getting menu by id :  pq: column reference "id" is ambiguous
+[ERROR]  2024/06/13 11:24:54 menu.go:94: Error while getting menu by id :  pq: column reference "id" is ambiguous

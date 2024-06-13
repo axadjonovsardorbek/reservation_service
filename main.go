@@ -36,6 +36,9 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterReservationServiceServer(s, service.NewReservationService(db))
+	pb.RegisterRestaurantServiceServer(s, service.NewRestaurantService(db))
+	pb.RegisterMenuServiceServer(s, service.NewMenuService(db))
+	// pb.RegisterReservationOrderServiceServer(s, service.NewReservationOrderService(db))
 
 	log.Printf("server listening at %v", listener.Addr())
 	if err := s.Serve(listener); err != nil {

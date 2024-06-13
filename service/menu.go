@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	r "reservation-service/genproto/reservation"
 	st "reservation-service/storage/postgres"
 )
@@ -16,48 +17,48 @@ func NewMenuService(storage *st.Storage) *MenuService {
 	}
 }
 
-// func (s *MenuService) Create(ctx context.Context, menu *r.MenuReq) (*r.Menu, error) {
-// 	resp, err := s.storage.MenuS.Create(menu)
+func (s *MenuService) Create(ctx context.Context, menu *r.MenuReq) (*r.Menu, error) {
+	resp, err := s.storage.MenuS.Create(menu)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return resp, nil
-// }
+	return resp, nil
+}
 
-// func (s *MenuService) Get(ctx context.Context, idReq *r.GetByIdReq) (*r.MenuRes, error) {
-// 	resp, err := s.storage.MenuS.Get(idReq)
+func (s *MenuService) Get(ctx context.Context, idReq *r.GetByIdReq) (*r.MenuRes, error) {
+	resp, err := s.storage.MenuS.Get(idReq)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return resp, nil
-// }
+	return resp, nil
+}
 
-// func (s *MenuService) GetAll(ctx context.Context, allMenus *r.GetAllMenuReq) (*r.GetAllMenuRes, error) {
-// 	items, err := s.storage.MenuS.GetAll(allMenus)
+func (s *MenuService) GetAll(ctx context.Context, allMenus *r.GetAllMenuReq) (*r.GetAllMenuRes, error) {
+	items, err := s.storage.MenuS.GetAll(allMenus)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return items, nil
-// }
+	return items, nil
+}
 
-// func (s *MenuService) Update(ctx context.Context, menu *r.MenuUpdate) (*r.Menu, error) {
-// 	resp, err := s.storage.MenuS.Update(menu)
+func (s *MenuService) Update(ctx context.Context, menu *r.MenuUpdate) (*r.Menu, error) {
+	resp, err := s.storage.MenuS.Update(menu)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	if err != nil {
+		return nil, err
+	}
 
-// 	return resp, nil
-// }
+	return resp, nil
+}
 
-// func (s *MenuService) Delete(ctx context.Context, idReq *r.GetByIdReq) (*r.Void, error) {
-// 	_, err := s.storage.MenuS.Delete(idReq)
+func (s *MenuService) Delete(ctx context.Context, idReq *r.GetByIdReq) (*r.Void, error) {
+	_, err := s.storage.MenuS.Delete(idReq)
 
-// 	return nil, err
-// }
+	return nil, err
+}
