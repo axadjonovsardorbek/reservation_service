@@ -22,6 +22,7 @@ type ReservationI interface {
 	GetAll(*r.GetAllReservationReq) (*r.GetAllReservationRes, error)
 	Update(*r.ReservationUpdate) (*r.Reservation, error)
 	Delete(*r.GetByIdReq) (*r.Void, error)
+	CheckTime(req *r.CheckTimeReq) (*r.CheckTimeResp, error)
 }
 
 type ReservationOrderI interface {

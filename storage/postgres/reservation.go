@@ -282,11 +282,14 @@ func (r *ReservationRepo) CheckTime(req *pb.CheckTimeReq) (*pb.CheckTimeResp, er
 			r.Logger.ERROR.Println("Error while scanning time : ", err)
 			return nil, err
 		}
+		fmt.Println(req.Time, reservationTime.Format("2006-01-02 15:04:05"))
 		if req.Time == reservationTime.Format("2006-01-02 15:04:05") {
-			res.IsBooked = false
+			fmt.Println(req.RestaurantId, req.RestaurantId)
+			res.IsBooked = true
 			return &res, nil
 		}
 	}
-	res.IsBooked = true
+	res.IsBooked = false
+	fmt.Println("gggggggggggggggggggggggggggggGGG", res, res.IsBooked)
 	return &res, nil
 }
