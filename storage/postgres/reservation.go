@@ -254,10 +254,17 @@ func (r *ReservationRepo) Delete(req *pb.GetByIdReq) (*pb.Void, error) {
 	res := pb.Void{}
 
 	query := `UPDATE reservations SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1`
-	_, err := r.db.Exec(query, req.Id)
+	ress, err := r.db.Exec(query, req.Id)
 	if err != nil {
 		r.Logger.ERROR.Println("Error while deleting reservation : ", err)
 		return nil, err
+	}
+
+	if r, err := ress.RowsAffected(); r == 0 {
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("restaurant with id %s not found", req.Id)
 	}
 
 	r.Logger.INFO.Println("Successfully deleted reservation")
@@ -267,7 +274,8 @@ func (r *ReservationRepo) Delete(req *pb.GetByIdReq) (*pb.Void, error) {
 func (r *ReservationRepo) CheckTime(req *pb.CheckTimeReq) (*pb.CheckTimeResp, error) {
 	var res pb.CheckTimeResp
 
-	query := `SELECT reservation_time FROM reservations WHERE restaurant_id=$1 and deleted_at=0`
+	query := `SELECT reservation_time FROM reservations WHERE restaurant_id=$1 AND status <> 'bo''sh' AND deleted_at=0`
+
 	rows, err := r.db.Query(query, req.RestaurantId)
 	if err != nil {
 		r.Logger.ERROR.Println("Error while checking time : ", err)
@@ -282,11 +290,50 @@ func (r *ReservationRepo) CheckTime(req *pb.CheckTimeReq) (*pb.CheckTimeResp, er
 			r.Logger.ERROR.Println("Error while scanning time : ", err)
 			return nil, err
 		}
-		if req.Time == reservationTime.Format("2006-01-02 15:04:05") {
+		if req.Time == reservationTime.Format("2006-01-02 15") {
 			res.IsBooked = true
 			return &res, nil
 		}
 	}
 	res.IsBooked = false
 	return &res, nil
+}
+
+func (m *ReservationRepo) GetMenu(req *pb.GetMenuReq) (*pb.GetAllMenuRess, error) {
+
+	var res = &pb.GetAllMenuRess{
+		Menus: []*pb.GetMenuRes{},
+	}
+
+	query := `SELECT 
+				id, 
+				name,
+				description,
+				price
+			FROM menu 
+			WHERE restaurant_id=$1 and deleted_at=0`
+
+	rows, err := m.db.Query(query, req.RestaurantId)
+	if err != nil {
+		m.Logger.ERROR.Println("Error while getting menus : ", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		menu := pb.GetMenuRes{}
+		err := rows.Scan(
+			&menu.Id,
+			&menu.Name,
+			&menu.Description,
+			&menu.Price,
+		)
+		if err != nil {
+			m.Logger.ERROR.Println("Error while getting menus : ", err)
+			return nil, err
+		}
+		res.Menus = append(res.Menus, &menu)
+	}
+
+	return res, nil
 }

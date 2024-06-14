@@ -23,6 +23,7 @@ type ReservationI interface {
 	Update(*r.ReservationUpdate) (*r.Reservation, error)
 	Delete(*r.GetByIdReq) (*r.Void, error)
 	CheckTime(req *r.CheckTimeReq) (*r.CheckTimeResp, error)
+	GetMenu(req *r.GetMenuReq) (*r.GetAllMenuRess, error)
 }
 
 type ReservationOrderI interface {

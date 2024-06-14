@@ -68,3 +68,9 @@ func (s *ReservationService) CheckTime(ctx context.Context, req *r.CheckTimeReq)
 
 	return resp, err
 }
+
+func (s *ReservationService) GetMenu(ctx context.Context, req *r.GetMenuReq) (*r.GetAllMenuRess, error) {
+	res, err := s.storage.ReservationS.GetMenu(req)
+
+	return res, err
+}

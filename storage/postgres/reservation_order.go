@@ -448,10 +448,17 @@ func (o *ReservationOrderRepo) Delete(req *r.GetByIdReq) (*r.Void, error) {
 	res := r.Void{}
 
 	query := `UPDATE reservation_orders SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1`
-	_, err := o.db.Exec(query, req.Id)
+	ress, err := o.db.Exec(query, req.Id)
 	if err != nil {
 		o.Logger.ERROR.Println("Error while deleting reservation_order")
 		return nil, err
+	}
+
+	if r, err := ress.RowsAffected(); r == 0 {
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("restaurant with id %s not found", req.Id)
 	}
 
 	return &res, nil

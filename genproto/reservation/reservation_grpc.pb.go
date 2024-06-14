@@ -25,6 +25,7 @@ const (
 	ReservationService_Update_FullMethodName    = "/reservation.ReservationService/Update"
 	ReservationService_Delete_FullMethodName    = "/reservation.ReservationService/Delete"
 	ReservationService_CheckTime_FullMethodName = "/reservation.ReservationService/CheckTime"
+	ReservationService_GetMenu_FullMethodName   = "/reservation.ReservationService/GetMenu"
 )
 
 // ReservationServiceClient is the client API for ReservationService service.
@@ -37,6 +38,7 @@ type ReservationServiceClient interface {
 	Update(ctx context.Context, in *ReservationUpdate, opts ...grpc.CallOption) (*Reservation, error)
 	Delete(ctx context.Context, in *GetByIdReq, opts ...grpc.CallOption) (*Void, error)
 	CheckTime(ctx context.Context, in *CheckTimeReq, opts ...grpc.CallOption) (*CheckTimeResp, error)
+	GetMenu(ctx context.Context, in *GetMenuReq, opts ...grpc.CallOption) (*GetAllMenuRess, error)
 }
 
 type reservationServiceClient struct {
@@ -101,6 +103,15 @@ func (c *reservationServiceClient) CheckTime(ctx context.Context, in *CheckTimeR
 	return out, nil
 }
 
+func (c *reservationServiceClient) GetMenu(ctx context.Context, in *GetMenuReq, opts ...grpc.CallOption) (*GetAllMenuRess, error) {
+	out := new(GetAllMenuRess)
+	err := c.cc.Invoke(ctx, ReservationService_GetMenu_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ReservationServiceServer is the server API for ReservationService service.
 // All implementations must embed UnimplementedReservationServiceServer
 // for forward compatibility
@@ -111,6 +122,7 @@ type ReservationServiceServer interface {
 	Update(context.Context, *ReservationUpdate) (*Reservation, error)
 	Delete(context.Context, *GetByIdReq) (*Void, error)
 	CheckTime(context.Context, *CheckTimeReq) (*CheckTimeResp, error)
+	GetMenu(context.Context, *GetMenuReq) (*GetAllMenuRess, error)
 	mustEmbedUnimplementedReservationServiceServer()
 }
 
@@ -135,6 +147,9 @@ func (UnimplementedReservationServiceServer) Delete(context.Context, *GetByIdReq
 }
 func (UnimplementedReservationServiceServer) CheckTime(context.Context, *CheckTimeReq) (*CheckTimeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckTime not implemented")
+}
+func (UnimplementedReservationServiceServer) GetMenu(context.Context, *GetMenuReq) (*GetAllMenuRess, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMenu not implemented")
 }
 func (UnimplementedReservationServiceServer) mustEmbedUnimplementedReservationServiceServer() {}
 
@@ -257,6 +272,24 @@ func _ReservationService_CheckTime_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ReservationService_GetMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMenuReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ReservationServiceServer).GetMenu(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ReservationService_GetMenu_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ReservationServiceServer).GetMenu(ctx, req.(*GetMenuReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ReservationService_ServiceDesc is the grpc.ServiceDesc for ReservationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -287,6 +320,10 @@ var ReservationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CheckTime",
 			Handler:    _ReservationService_CheckTime_Handler,
+		},
+		{
+			MethodName: "GetMenu",
+			Handler:    _ReservationService_GetMenu_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

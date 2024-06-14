@@ -59,3 +59,31 @@
 [INFO]  2024/06/14 14:24:46 reservation.go:59: Successfully created reservation
 [INFO]  2024/06/14 14:25:25 reservation_order.go:155: Successfully created reservation_order
 [ERROR]  2024/06/14 14:25:25 reservation_order.go:54: Successfully committed transaction for company deletion id 9607803b-e58e-4fc8-be47-6f0875a0f5de
+[ERROR]  2024/06/14 16:09:49 reservation.go:273: Error while checking time :  pq: column "bo'sh" does not exist
+[ERROR]  2024/06/14 16:15:40 reservation.go:244: Error while updating reservation :  pq: invalid input syntax for type uuid: "string"
+[INFO]  2024/06/14 16:16:15 reservation.go:249: Successfully updated reservation
+[ERROR]  2024/06/14 16:49:57 reservation.go:318: Error while getting menus :  pq: syntax error at or near "FROM"
+[ERROR]  2024/06/14 16:50:23 reservation.go:318: Error while getting menus :  pq: column "restaurant_is" does not exist
+[ERROR]  2024/06/14 16:50:46 reservation.go:318: Error while getting menus :  pq: invalid input syntax for type uuid: "{id}"
+[ERROR]  2024/06/14 16:51:14 reservation.go:318: Error while getting menus :  pq: invalid input syntax for type uuid: "{id}"
+[ERROR]  2024/06/14 16:55:10 reservation.go:318: Error while getting menus :  pq: invalid input syntax for type uuid: "{id}"
+[ERROR]  2024/06/14 16:57:28 reservation.go:318: Error while getting menus :  pq: invalid input syntax for type uuid: ""
+[ERROR]  2024/06/14 16:59:32 reservation.go:318: Error while getting menus :  pq: invalid input syntax for type uuid: ""
+[ERROR]  2024/06/14 16:59:58 reservation.go:318: Error while getting menus :  pq: invalid input syntax for type uuid: ""
+[ERROR]  2024/06/14 17:01:47 reservation.go:320: Error while getting menus :  pq: invalid input syntax for type uuid: ""
+[INFO]  2024/06/14 17:03:13 reservation.go:224: Successfully fetched all reservations
+[INFO]  2024/06/14 17:03:37 menu.go:57: Successfully created menu
+[ERROR]  2024/06/14 17:34:48 reservation_order.go:150: Restaurants are not the same!!!
+[ERROR]  2024/06/14 17:34:48 reservation_order.go:52: Error committing transaction for company deletion id c23ea8dd-c2ad-42b9-b529-4ac8b06778e0 error sql: transaction has already been committed or rolled back
+[ERROR]  2024/06/14 17:40:42 reservation_order.go:150: Restaurants are not the same!!!
+[ERROR]  2024/06/14 17:40:42 reservation_order.go:52: Error committing transaction for company deletion id 8a6060a9-29bf-476e-9d6f-9e0ea40937a8 error sql: transaction has already been committed or rolled back
+[INFO]  2024/06/14 17:42:53 reservation_order.go:155: Successfully created reservation_order
+[ERROR]  2024/06/14 17:42:53 reservation_order.go:54: Successfully committed transaction for company deletion id ad359d24-f85d-4f17-813a-546a4fb3c79c
+[ERROR]  2024/06/14 17:56:01 reservation.go:53: Error while creating reservation:  pq: invalid input value for enum status: "bron"
+[INFO]  2024/06/14 17:56:12 reservation.go:59: Successfully created reservation
+[ERROR]  2024/06/14 17:57:20 reservation_order.go:150: Restaurants are not the same!!!
+[ERROR]  2024/06/14 17:57:20 reservation_order.go:52: Error committing transaction for company deletion id 86446179-0ea8-409e-afbb-727b0d2bc2be error sql: transaction has already been committed or rolled back
+[INFO]  2024/06/14 17:58:14 reservation_order.go:155: Successfully created reservation_order
+[ERROR]  2024/06/14 17:58:14 reservation_order.go:54: Successfully committed transaction for company deletion id acf70af8-7607-49ae-b165-45a1941346a0
+[INFO]  2024/06/14 17:58:45 reservation_order.go:155: Successfully created reservation_order
+[ERROR]  2024/06/14 17:58:45 reservation_order.go:54: Successfully committed transaction for company deletion id 77b09c3c-c4cc-40fc-8ff9-8fbc1152db3a

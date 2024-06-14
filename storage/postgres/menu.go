@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"fmt"
 	"reservation-service/config/logger"
 	pb "reservation-service/genproto/reservation"
 
@@ -196,10 +197,17 @@ func (m *MenuRepo) Delete(id *pb.GetByIdReq) (*pb.Void, error) {
 	res := pb.Void{}
 
 	query := `UPDATE menu SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1 and deleted_at=0`
-	_, err := m.db.Exec(query, id.Id)
+	ress, err := m.db.Exec(query, id.Id)
 	if err != nil {
 		m.Logger.ERROR.Println("Error while deleting menu")
 		return nil, err
+	}
+
+	if r, err := ress.RowsAffected(); r == 0 {
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("restaurant with id %s not found", id.Id)
 	}
 
 	return &res, nil
