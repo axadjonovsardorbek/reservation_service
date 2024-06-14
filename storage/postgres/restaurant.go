@@ -123,12 +123,11 @@ func (r *RestaurantRepo) GetAll(req *pb.GetAllRestaurantReq) (*pb.GetAllRestaura
 func (r *RestaurantRepo) Update(restaurant *pb.RestaurantUpdate) (*pb.Restaurant, error) {
 
 	if r.db == nil {
-        return nil, fmt.Errorf("database connection is nil")
-    }
-    if r.Logger == nil {
-        return nil, fmt.Errorf("logger is nil")
-    }
-
+		return nil, fmt.Errorf("database connection is nil")
+	}
+	if r.Logger == nil {
+		return nil, fmt.Errorf("logger is nil")
+	}
 
 	res := pb.Restaurant{}
 
@@ -176,10 +175,17 @@ func (r *RestaurantRepo) Delete(id *pb.GetByIdReq) (*pb.Void, error) {
 	res := pb.Void{}
 
 	query := `UPDATE restaurants SET deleted_at=EXTRACT(EPOCH FROM NOW()) WHERE id=$1 and deleted_at=0`
-	_, err := r.db.Exec(query, id.Id)
+	ress, err := r.db.Exec(query, id.Id)
 	if err != nil {
 		r.Logger.ERROR.Println("Error while deleting restaurant")
 		return nil, err
+	}
+
+	if r, err := ress.RowsAffected(); r == 0 {
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("restaurant with id %s not found", id.Id)
 	}
 
 	r.Logger.INFO.Println("Successfully deleted restaurant")
