@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"fmt"
 	"reservation-service/client"
 	"reservation-service/config/logger"
 	r "reservation-service/genproto/reservation"
@@ -34,7 +35,7 @@ func (o *ReservationOrderRepo) Create(req *r.ReservationOrderReq) (*r.Reservatio
 	tr, err := o.db.Begin()
 	if err != nil {
 		o.Logger.ERROR.Println("Error beginning transaction for company deletion", "id", id, "error", err)
-		return nil, err 
+		return nil, err
 	}
 
 	defer func() {
@@ -54,7 +55,6 @@ func (o *ReservationOrderRepo) Create(req *r.ReservationOrderReq) (*r.Reservatio
 			}
 		}
 	}()
-
 
 	insertQuery := `INSERT INTO reservation_orders (
 		id,
@@ -115,9 +115,9 @@ func (o *ReservationOrderRepo) Create(req *r.ReservationOrderReq) (*r.Reservatio
 		&res.MenuItem.Price,
 		&res.MenuItem.Restaurant.Id,
 		&res.MenuItem.Restaurant.Name,
-        &res.MenuItem.Restaurant.Address,
-        &res.MenuItem.Restaurant.PhoneNumber,
-        &res.MenuItem.Restaurant.Description,
+		&res.MenuItem.Restaurant.Address,
+		&res.MenuItem.Restaurant.PhoneNumber,
+		&res.MenuItem.Restaurant.Description,
 		&res.Quantity,
 	)
 	if err != nil {
@@ -145,26 +145,26 @@ func (o *ReservationOrderRepo) Create(req *r.ReservationOrderReq) (*r.Reservatio
 	res.Reservation.User.Username = us.Username
 	res.Reservation.User.Email = us.Email
 	res.Reservation.ReservationTime = reservationTime.Format("2006-01-02 15:04:05")
-	
 
 	if res.Reservation.Restaurant.Id != res.MenuItem.Restaurant.Id {
 		o.Logger.ERROR.Println("Restaurants are not the same!!!")
 		tr.Rollback()
-        return nil, err
+		return nil, fmt.Errorf("Restaurants are not the same!!!")
 	}
 
 	o.Logger.INFO.Println("Successfully created reservation_order")
 
+	fmt.Println(res)
 	return &res, nil
 }
 
 func (o *ReservationOrderRepo) Get(req *r.GetByIdReq) (*r.ReservationOrderRes, error) {
 	res := &r.ReservationOrderRes{
 		Reservation: &r.ReservationRes{
-			User: &r.UserResp{},
+			User:       &r.UserResp{},
 			Restaurant: &r.Restaurant{},
 		},
-		MenuItem:    &r.MenuRes{
+		MenuItem: &r.MenuRes{
 			Restaurant: &r.Restaurant{},
 		},
 	}
@@ -215,9 +215,9 @@ func (o *ReservationOrderRepo) Get(req *r.GetByIdReq) (*r.ReservationOrderRes, e
 		&res.MenuItem.Price,
 		&res.MenuItem.Restaurant.Id,
 		&res.MenuItem.Restaurant.Name,
-        &res.MenuItem.Restaurant.Address,
-        &res.MenuItem.Restaurant.PhoneNumber,
-        &res.MenuItem.Restaurant.Description,
+		&res.MenuItem.Restaurant.Address,
+		&res.MenuItem.Restaurant.PhoneNumber,
+		&res.MenuItem.Restaurant.Description,
 		&res.Quantity,
 	)
 	if err != nil {
@@ -251,9 +251,9 @@ func (o *ReservationOrderRepo) Get(req *r.GetByIdReq) (*r.ReservationOrderRes, e
 
 func (o *ReservationOrderRepo) GetAll(req *r.GetAllReservationOrderReq) (*r.GetAllReservationOrderRes, error) {
 	res := &r.GetAllReservationOrderRes{
-        ReservationOrder: []*r.ReservationOrderRes{},
-    }
-	
+		ReservationOrder: []*r.ReservationOrderRes{},
+	}
+
 	selectQuery := `SELECT
 				ro.id,
 				r.id as reservation_id,
@@ -292,10 +292,10 @@ func (o *ReservationOrderRepo) GetAll(req *r.GetAllReservationOrderReq) (*r.GetA
 	for rows.Next() {
 		resOrd := &r.ReservationOrderRes{
 			Reservation: &r.ReservationRes{
-				User: &r.UserResp{},
+				User:       &r.UserResp{},
 				Restaurant: &r.Restaurant{},
 			},
-			MenuItem:    &r.MenuRes{
+			MenuItem: &r.MenuRes{
 				Restaurant: &r.Restaurant{},
 			},
 		}
@@ -325,7 +325,7 @@ func (o *ReservationOrderRepo) GetAll(req *r.GetAllReservationOrderReq) (*r.GetA
 			o.Logger.ERROR.Println("Error while retrieving reservation_order details:", err)
 			return nil, err
 		}
-		
+
 		userQuery := `SELECT user_id FROM reservations WHERE id = $1`
 		row := o.db.QueryRow(userQuery, resOrd.Reservation.Id)
 
@@ -359,10 +359,10 @@ func (o *ReservationOrderRepo) Update(req *r.ReservationOrderUpdateReq) (*r.Rese
 	query := `UPDATE reservation_orders SET reservation_id=$1, menu_item_id=$2, quantity=$3 WHERE id=$4 and deleted_at=0`
 
 	_, err := o.db.Exec(query, req.Update.ReservationId, req.Update.MenuItemId, req.Update.Quantity, req.Id.Id)
-	if err!= nil {
-        o.Logger.ERROR.Println("Error while updating reservation_order:", err)
-        return nil, err
-    }
+	if err != nil {
+		o.Logger.ERROR.Println("Error while updating reservation_order:", err)
+		return nil, err
+	}
 
 	selectQuery := `SELECT
 				ro.id,
@@ -410,9 +410,9 @@ func (o *ReservationOrderRepo) Update(req *r.ReservationOrderUpdateReq) (*r.Rese
 		&res.MenuItem.Price,
 		&res.MenuItem.Restaurant.Id,
 		&res.MenuItem.Restaurant.Name,
-        &res.MenuItem.Restaurant.Address,
-        &res.MenuItem.Restaurant.PhoneNumber,
-        &res.MenuItem.Restaurant.Description,
+		&res.MenuItem.Restaurant.Address,
+		&res.MenuItem.Restaurant.PhoneNumber,
+		&res.MenuItem.Restaurant.Description,
 		&res.Quantity,
 	)
 	if err != nil {

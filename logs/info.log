@@ -52,3 +52,10 @@
 [ERROR]  2024/06/13 17:53:06 reservation_order.go:362: Error while updating reservation_order: pq: invalid input syntax for type uuid: "string"
 [ERROR]  2024/06/13 17:53:23 reservation_order.go:362: Error while updating reservation_order: pq: invalid input syntax for type uuid: "string"
 [ERROR]  2024/06/13 17:54:02 reservation_order.go:362: Error while updating reservation_order: pq: insert or update on table "reservation_orders" violates foreign key constraint "reservation_orders_reservation_id_fkey"
+[ERROR]  2024/06/14 14:12:55 reservation_order.go:151: Restaurants are not the same!!!
+[ERROR]  2024/06/14 14:12:55 reservation_order.go:51: Error committing transaction for company deletion id 14802134-e9bc-4b68-962e-ee7b6bd8f209 error sql: transaction has already been committed or rolled back
+[ERROR]  2024/06/14 14:23:20 reservation_order.go:150: Restaurants are not the same!!!
+[ERROR]  2024/06/14 14:23:20 reservation_order.go:52: Error committing transaction for company deletion id 294856a9-a93d-4b78-a39c-4d0da7d23300 error sql: transaction has already been committed or rolled back
+[INFO]  2024/06/14 14:24:46 reservation.go:59: Successfully created reservation
+[INFO]  2024/06/14 14:25:25 reservation_order.go:155: Successfully created reservation_order
+[ERROR]  2024/06/14 14:25:25 reservation_order.go:54: Successfully committed transaction for company deletion id 9607803b-e58e-4fc8-be47-6f0875a0f5de

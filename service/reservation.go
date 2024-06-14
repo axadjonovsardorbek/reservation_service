@@ -64,7 +64,7 @@ func (s *ReservationService) Delete(ctx context.Context, idReq *r.GetByIdReq) (*
 }
 
 func (s *ReservationService) CheckTime(ctx context.Context, req *r.CheckTimeReq) (*r.CheckTimeResp, error) {
-	_, err := s.storage.ReservationS.CheckTime(req)
+	resp, err := s.storage.ReservationS.CheckTime(req)
 
-	return nil, err
+	return resp, err
 }
